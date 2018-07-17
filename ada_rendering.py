@@ -20,8 +20,6 @@ from six.moves import xrange  # pylint: disable=redefined-builtin
 
 import vgg
 from create_database import *
-from create_database_svm import *
-
 import functools
 
 FLAGS = None
@@ -231,7 +229,7 @@ class pose2image(object):
 
         # data = create_database('train', 1)
         # batch_idxs = min(len(data), args.train_size) // self.batch_size
-        data_test = create_database_svm('test', 1)
+        data_test = create_database('test', 1)
         batch_idxs_test = len(data_test) // self.batch_size
 
         for epoch in xrange(args.epoch):
@@ -475,7 +473,7 @@ class pose2image(object):
         self.sess.run(init_op)
         print("Variables initialized")
         print("Creating Test Data...")
-        data = create_database_svm('test', 1)
+        data = create_database('test', 1)
         print("Data created...")
         batch_idxs = min(len(data), args.train_size) // self.batch_size
         start_time = time.time()
@@ -487,7 +485,7 @@ class pose2image(object):
         for idx in xrange(0, batch_idxs):
             batch_files = data[idx * self.batch_size:(idx + 1) * self.batch_size]
             batch = [load_data(batch_file) for batch_file in batch_files]
-            if (self.is_grayscale):
+            if self.is_grayscale:
                 batch_images = np.array(batch).astype(np.float32)[:, :, :, None]
             else:
                 batch_images = np.array(batch).astype(np.float32)
@@ -496,7 +494,7 @@ class pose2image(object):
                 self.fake_target,
                 feed_dict={self.real_data: batch_images}
             )
-            print samples.shape
+            print(samples.shape)
             person_idx = idx + 1
             save_images(samples, [self.batch_size, 1],
                         '{}/test_{:d}.png'.format(args.test_dir, person_idx))
