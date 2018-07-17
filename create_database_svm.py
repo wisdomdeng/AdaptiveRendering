@@ -1,7 +1,8 @@
 from random import randint
-def create_database_svm(MODE,TIMESTEPS):
 
-    if MODE=='test':
+
+def create_database_svm(MODE, TIMESTEPS):
+    if MODE == 'test':
         pose_dir = '/local-scratch/dengr/ruizhid_cedar/local-scratch2/mzhai/cvpr18/dataset/fashion/testing_data_using_gt/target_posemap/'
         style_dir = '/local-scratch/dengr/ruizhid_cedar/local-scratch2/mzhai/cvpr18/dataset/fashion/testing_data_using_gt/ref_img/'
         target_dir = '/local-scratch/dengr/ruizhid_cedar/local-scratch2/mzhai/cvpr18/dataset/fashion/testing_data_using_gt/target_img/'
@@ -17,7 +18,7 @@ def create_database_svm(MODE,TIMESTEPS):
 
     data = []
 
-    for i in range(1, num_examples_per_epoch+1):
+    for i in range(1, num_examples_per_epoch + 1):
         i_person = i
 
         style_image = style_dir + str(i_person) + '.jpg'

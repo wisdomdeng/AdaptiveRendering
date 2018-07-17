@@ -3,7 +3,7 @@ import os
 import scipy.misc
 import numpy as np
 
-from model_vgg import pose2image
+from ada_rendering import pose2image
 import tensorflow as tf
 from pdb import set_trace as st
 
@@ -22,21 +22,32 @@ parser.add_argument('--beta1', dest='beta1', type=float, default=0.5, help='mome
 parser.add_argument('--flip', dest='flip', type=bool, default=False, help='if flip the images for data argumentation')
 parser.add_argument('--which_direction', dest='which_direction', default='AtoB', help='AtoB or BtoA')
 parser.add_argument('--phase', dest='phase', default='test', help='train, test')
-parser.add_argument('--save_epoch_freq', dest='save_epoch_freq', type=int, default=50, help='save a model every save_epoch_freq epochs (does not overwrite previously saved models)')
-parser.add_argument('--print_freq', dest='print_freq', type=int, default=50, help='print the debug information every print_freq iterations')
-parser.add_argument('--save_latest_freq', dest='save_latest_freq', type=int, default=5000, help='save the latest model every latest_freq sgd iterations (overwrites the previous latest model)')
-parser.add_argument('--continue_train', dest='continue_train', type=bool, default=False, help='if continue training, load the latest model: 1: true, 0: false')
-parser.add_argument('--serial_batches', dest='serial_batches', type=bool, default=False, help='f 1, takes images in order to make batches, otherwise takes them randomly')
-parser.add_argument('--serial_batch_iter', dest='serial_batch_iter', type=bool, default=True, help='iter into serial image list')
-#parser.add_argument('--checkpoint_dir', dest='checkpoint_dir', default='/local-scratch/cvpr18/dataset/checkpoint/', help='models are saved here')
-parser.add_argument('--checkpoint_dir', dest='checkpoint_dir', default='./checkpoint-debug-352epoch', help='models are saved here')
-parser.add_argument('--root_dir', dest='root_dir', default='/local-scratch2/mzhai/cvpr18/fashion-pose2image-batchsize1/', help='root_dir')
+parser.add_argument('--save_epoch_freq', dest='save_epoch_freq', type=int, default=50,
+                    help='save a model every save_epoch_freq epochs (does not overwrite previously saved models)')
+parser.add_argument('--print_freq', dest='print_freq', type=int, default=50,
+                    help='print the debug information every print_freq iterations')
+parser.add_argument('--save_latest_freq', dest='save_latest_freq', type=int, default=5000,
+                    help='save the latest model every latest_freq sgd iterations (overwrites the previous latest model)')
+parser.add_argument('--continue_train', dest='continue_train', type=bool, default=False,
+                    help='if continue training, load the latest model: 1: true, 0: false')
+parser.add_argument('--serial_batches', dest='serial_batches', type=bool, default=False,
+                    help='f 1, takes images in order to make batches, otherwise takes them randomly')
+parser.add_argument('--serial_batch_iter', dest='serial_batch_iter', type=bool, default=True,
+                    help='iter into serial image list')
+# parser.add_argument('--checkpoint_dir', dest='checkpoint_dir', default='/local-scratch/cvpr18/dataset/checkpoint/', help='models are saved here')
+parser.add_argument('--checkpoint_dir', dest='checkpoint_dir', default='./checkpoint-debug-352epoch',
+                    help='models are saved here')
+parser.add_argument('--root_dir', dest='root_dir',
+                    default='/local-scratch2/mzhai/cvpr18/fashion-pose2image-batchsize1/', help='root_dir')
 parser.add_argument('--sample_dir', dest='sample_dir', default='./sample', help='sample are saved here')
-#parser.add_argument('--test_dir', dest='test_dir', default='/local-scratch2/mzhai/ComputeCanada/final_models/final_models/pose2image-batchsize1/test', help='test sample are saved here')
+# parser.add_argument('--test_dir', dest='test_dir', default='/local-scratch2/mzhai/ComputeCanada/final_models/final_models/pose2image-batchsize1/test', help='test sample are saved here')
 parser.add_argument('--test_dir', dest='test_dir', default='./ours-rerun-20180712', help='test sample are saved here')
-parser.add_argument('--vgg_path', dest='vgg_path', default='/local-scratch/dengr/ruizhid_cedar/local-scratch2/mzhai/cvpr18/dataset/data/pre_trained/beta16/imagenet-vgg-verydeep-19.mat', help='path of the pretrained vgg model')
+parser.add_argument('--vgg_path', dest='vgg_path',
+                    default='/local-scratch/dengr/ruizhid_cedar/local-scratch2/mzhai/cvpr18/dataset/data/pre_trained/beta16/imagenet-vgg-verydeep-19.mat',
+                    help='path of the pretrained vgg model')
 
 args = parser.parse_args()
+
 
 def main(_):
     if not os.path.exists(args.checkpoint_dir):
@@ -49,8 +60,8 @@ def main(_):
     with tf.Session(config=tf.ConfigProto(device_count={'GPU': 1})) as sess:
         print("Creating Model...")
         model = pose2image(sess, image_size=args.fine_size, batch_size=args.batch_size,
-                        output_size=args.fine_size, dataset_name=args.dataset_name,
-                        checkpoint_dir=args.checkpoint_dir, sample_dir=args.sample_dir, vgg_path=args.vgg_path)
+                           output_size=args.fine_size, dataset_name=args.dataset_name,
+                           checkpoint_dir=args.checkpoint_dir, sample_dir=args.sample_dir, vgg_path=args.vgg_path)
         print("Model Created...")
         # st()
         if args.phase == 'train':
@@ -59,6 +70,7 @@ def main(_):
         else:
             print("Start to test model...")
             model.test(args)
+
 
 if __name__ == '__main__':
     tf.app.run()
