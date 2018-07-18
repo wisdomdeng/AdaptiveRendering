@@ -34,8 +34,8 @@ class pose2image(object):
                  gf_dim=32, df_dim=32, L1_lambda=100,
                  input_pose_dim=3, input_style_dim=3, output_image_dim=3, dataset_name='facades',
                  content_weight=1e-4, style_weight=1e-14,
-                 checkpoint_dir=None, sample_dir=None,
-                 vgg_path='/local-scratch2/mzhai/cvpr18/dataset/data/pre_trained/beta16/imagenet-vgg-verydeep-19.mat'):
+                 checkpoint_dir=None, sample_dir=None, dataset = 'fashion', dataset_dir='./dataset',
+                 vgg_path='./pretrained_vgg/imagenet-vgg-verydeep-19.mat'):
         """
 
         Args:
@@ -53,7 +53,8 @@ class pose2image(object):
         self.image_size = image_size
         self.sample_size = sample_size
         self.output_size = output_size
-
+        self.dataset = dataset
+        self.dataset_dir = dataset_dir
         self.vgg_path = vgg_path
 
         self.gf_dim = gf_dim
@@ -229,12 +230,12 @@ class pose2image(object):
 
         # data = create_database('train', 1)
         # batch_idxs = min(len(data), args.train_size) // self.batch_size
-        data_test = create_database('test', 1)
+        data_test = create_database('test', 1, base_dir=self.dataset_dir, dataset=self.dataset)
         batch_idxs_test = len(data_test) // self.batch_size
 
         for epoch in xrange(args.epoch):
 
-            data = create_database('train', 1)
+            data = create_database('train', 1, base_dir=self.dataset_dir, dataset=self.dataset)
             batch_idxs = min(len(data), args.train_size) // self.batch_size
 
             for idx in xrange(0, batch_idxs):
@@ -414,32 +415,6 @@ class pose2image(object):
 
             return tf.nn.tanh(self.d8)
 
-    # def save(self, checkpoint_dir, step):
-    #     model_name = "pose2image.model"
-    #     model_dir = "%s_%s_%d" % (self.dataset_name, "Epoch", step)
-    #     checkpoint_dir = os.path.join(checkpoint_dir, model_dir)
-
-    #     if not os.path.exists(checkpoint_dir):
-    #         os.makedirs(checkpoint_dir)
-
-    #     self.saver.save(self.sess,
-    #                     os.path.join(checkpoint_dir, model_name),
-    #                     global_step=step)
-
-    # def load(self, checkpoint_dir, step = 1000):
-    #     print(" [*] Reading checkpoint...")
-
-    #     model_dir = "%s_%s_%d" % (self.dataset_name, "Epoch", step)
-    #     checkpoint_dir = os.path.join(checkpoint_dir, model_dir)
-
-    #     ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
-    #     if ckpt and ckpt.model_checkpoint_path:
-    #         ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
-    #         self.saver.restore(self.sess, os.path.join(checkpoint_dir, ckpt_name))
-    #         return True
-    #     else:
-    #         return False
-
     def save_old(self, checkpoint_dir, step):
         model_name = "pose2image.model"
         model_dir = "%s_%s_%s" % (self.dataset_name, self.batch_size, self.output_size)
@@ -473,7 +448,7 @@ class pose2image(object):
         self.sess.run(init_op)
         print("Variables initialized")
         print("Creating Test Data...")
-        data = create_database('test', 1)
+        data = create_database('test', 1, base_dir=self.dataset_dir, dataset=self.dataset)
         print("Data created...")
         batch_idxs = min(len(data), args.train_size) // self.batch_size
         start_time = time.time()
@@ -494,7 +469,7 @@ class pose2image(object):
                 self.fake_target,
                 feed_dict={self.real_data: batch_images}
             )
-            print(samples.shape)
+            # print(samples.shape)
             person_idx = idx + 1
             save_images(samples, [self.batch_size, 1],
                         '{}/test_{:d}.png'.format(args.test_dir, person_idx))

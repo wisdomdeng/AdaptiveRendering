@@ -4,7 +4,7 @@ import numpy as np
 from skimage.measure import compare_psnr as psnr
 from skimage.measure import compare_mse as mse
 from skimage.measure import compare_ssim as ssim
-
+import sys
 
 def our_mse(imageA, imageB):
     # the 'Mean Squared Error' between the two images is the
@@ -58,35 +58,18 @@ def compute_error(style_dir, generated_dir):
     ssim_overall = ssim_overall / total_num_people
 
     print('\n')
-    print(generated_dir[45:], ':', i_person)
-    print(mse_overall, psnr_overall, ssim_overall)
+    print 'MSE', 'PSNR', 'SSIM'
+    print mse_overall, psnr_overall, ssim_overall
 
 
 if __name__ == "__main__":
-    style_dir = '/local-scratch/dengr/ruizhid_cedar/local-scratch2/mzhai/cvpr18/dataset/fashion/testing_data_using_gt/target_img/'
+    # style_dir = '/local-scratch/dengr/ruizhid_cedar/local-scratch2/mzhai/cvpr18/dataset/fashion/testing_data_using_gt/target_img/'
 
-    # generated_dir = '/local-scratch2/mzhai/cvpr18/fashion-pose2image-batchsize1_128*128/test-larger-mse/'
-    # compute_error(style_dir, generated_dir)
+    # generated_dir = './ours-rerun-20180712/'
 
-    # generated_dir = '/local-scratch2/mzhai/cvpr18/fashion-pose2image-batchsize1_128*128/test/'
-    # compute_error(style_dir, generated_dir)
+    style_dir = sys.argv[1]
+    generated_dir = sys.argv[2]
 
-    # generated_dir = '/local-scratch2/mzhai/cvpr18/fashion-pose2image-batchsize1_128*128/test-many-filters/'
-    # compute_error(style_dir, generated_dir)
-
-    # generated_dir = '/local-scratch2/mzhai/cvpr18/fashion-pose2image-batchsize1_128*128/test-fewer-encoder-layer/'
-    # compute_error(style_dir, generated_dir)
-
-    # generated_dir = '/local-scratch2/mzhai/cvpr18/fashion-pose2image-batchsize1_128*128/test-200epoch/'
-    # compute_error(style_dir, generated_dir)
-
-    # generated_dir = '/local-scratch2/mzhai/cvpr18/fashion-pose2image-batchsize1_128*128/test-no-l1-500epoch/'
-    # compute_error(style_dir, generated_dir)
-
-    # generated_dir = '/local-scratch2/mzhai/cvpr18/fashion-pose2image-batchsize1_128*128/test-no-l1/'
-    # compute_error(style_dir, generated_dir)
-
-    generated_dir = './ours-rerun-20180712/'
     compute_error(style_dir, generated_dir)
 
     print('\n')

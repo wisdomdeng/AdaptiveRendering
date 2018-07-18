@@ -1,2 +1,9 @@
 .idea
 *.pyc
+pretrained_vgg/*
+pretrained_ckpt/*
+dataset/*
+*.png
+*.jpg
+*.mat
+sample/*
