@@ -63,13 +63,8 @@ def compute_error(style_dir, generated_dir):
 
 
 if __name__ == "__main__":
-    # style_dir = '/local-scratch/dengr/ruizhid_cedar/local-scratch2/mzhai/cvpr18/dataset/fashion/testing_data_using_gt/target_img/'
-
-    # generated_dir = './ours-rerun-20180712/'
-
     style_dir = sys.argv[1]
     generated_dir = sys.argv[2]
 
     compute_error(style_dir, generated_dir)
 
-    print('\n')
