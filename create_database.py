@@ -48,7 +48,7 @@ def create_database(MODE, TIMESTEPS, base_dir='./dataset', dataset='fashion'):
 
     data = []
 
-    if MODE == 'train':
+    if MODE == 'train' and dataset == 'fashion':
         for i in range(1, num_examples_per_epoch + 1):
             i_person = randint(1, person_num)
             # i_person = i
@@ -61,7 +61,7 @@ def create_database(MODE, TIMESTEPS, base_dir='./dataset', dataset='fashion'):
 
         print(len(data))
 
-    elif MODE == 'test' and dataset == '':
+    elif MODE == 'test' and dataset == 'fashion':
         for i in range(1, num_examples_per_epoch + 1):
             i_person = i
 
